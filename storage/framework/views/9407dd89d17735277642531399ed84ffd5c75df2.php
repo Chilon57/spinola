@@ -22,6 +22,10 @@
                 margin: 0;
             }
 
+            #lista{
+                border: solid, 2px, gray;
+            }
+
             .full-height {
                 height: 100vh;
             }
@@ -90,6 +94,10 @@
                     <?php echo e(csrf_field()); ?>  
                         <input type="text" name="searchQuery" id="q" placeholder="Search">
                         <input type="submit" value="search">
+                        <br>
+                        <div id="lista">
+                            
+                        </div>
                     </form>
                     <?php if(Session::has('message')): ?>
                         <p class="alert <?php echo e(Session::get('alert-class', 'alert-info')); ?>"><?php echo e(Session::get('message')); ?></p>
@@ -118,8 +126,13 @@
         },
                                 data: {input: inputValue},
                 success: function (response) { 
+                    document.getElementById("lista").innerHTML = "";
                     response.map(function (x) {
-                        console.log(x);
+                        var lista = document.createElement("LI");                 
+                        var textnode = document.createTextNode(x);         
+                        lista.appendChild(textnode);                              
+                        document.getElementById("lista").appendChild(lista);
+                       
                     })
                 },
                 error: function (response) {

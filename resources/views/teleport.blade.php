@@ -90,6 +90,10 @@
                     {{ csrf_field() }}  
                         <input type="text" name="searchQuery" id="q" placeholder="Search">
                         <input type="submit" value="search">
+                        <br>
+                        <div id="lista">
+                            
+                        </div>
                     </form>
                     @if(Session::has('message'))
                         <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
@@ -118,8 +122,13 @@
         },
                                 data: {input: inputValue},
                 success: function (response) { 
+                    document.getElementById("lista").innerHTML = "";
                     response.map(function (x) {
-                        console.log(x);
+                        var lista = document.createElement("LI");                 
+                        var textnode = document.createTextNode(x);         
+                        lista.appendChild(textnode);                              
+                        document.getElementById("lista").appendChild(lista);
+                       
                     })
                 },
                 error: function (response) {
