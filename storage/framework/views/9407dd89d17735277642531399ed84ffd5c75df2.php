@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="<?php echo e(app()->getLocale()); ?>">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <title>Laravel</title>
 
@@ -68,16 +68,16 @@
     <body>
 
         <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
+            <?php if(Route::has('login')): ?>
                 <div class="top-right links">
-                    @if (Auth::check())
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ url('/login') }}">Login</a>
-                        <a href="{{ url('/register') }}">Register</a>
-                    @endif
+                    <?php if(Auth::check()): ?>
+                        <a href="<?php echo e(url('/home')); ?>">Home</a>
+                    <?php else: ?>
+                        <a href="<?php echo e(url('/login')); ?>">Login</a>
+                        <a href="<?php echo e(url('/register')); ?>">Register</a>
+                    <?php endif; ?>
                 </div>
-            @endif
+            <?php endif; ?>
 
             <div class="content">
                 <div class="title m-b-md">
@@ -87,13 +87,13 @@
                         
                     
                     <form method="post" action="/search">
-                    {{ csrf_field() }}  
+                    <?php echo e(csrf_field()); ?>  
                         <input type="text" name="searchQuery" id="q" placeholder="Search">
                         <input type="submit" value="search">
                     </form>
-                    @if(Session::has('message'))
-                        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
-                    @endif
+                    <?php if(Session::has('message')): ?>
+                        <p class="alert <?php echo e(Session::get('alert-class', 'alert-info')); ?>"><?php echo e(Session::get('message')); ?></p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -108,7 +108,7 @@
                                 },
                                 cache: false,
                                 encoding: "UTF-8",
-                                url: "{{ url('teleport') }}",
+                                url: "<?php echo e(url('teleport')); ?>",
                                 beforeSend: function (xhr) {
             var token = $('meta[name="csrf_token"]').attr('content');
 
