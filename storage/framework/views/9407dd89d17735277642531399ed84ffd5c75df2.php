@@ -6,54 +6,46 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <title>Laravel</title>
 
         <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:300" rel="stylesheet"> 
         <!-- Styles -->
         <style>
             html, body {
                 background-color: #fff;
-                color: #636b6f;
-                font-family: 'Raleway', sans-serif;
-                font-weight: 100;
+                font-family: 'Montserrat', sans-serif;
                 height: 100vh;
                 margin: 0;
+                width: 100%;
+                color: black;
             }
-
-            #lista{
-                border: solid, 2px, gray;
-            }
-
             .full-height {
                 height: 100vh;
             }
-
             .flex-center {
                 align-items: center;
                 display: flex;
                 justify-content: center;
             }
-
             .position-ref {
                 position: relative;
             }
-
             .top-right {
                 position: absolute;
                 right: 10px;
                 top: 18px;
             }
-
             .content {
                 text-align: center;
             }
-
             .title {
                 font-size: 84px;
             }
-
             .links > a {
                 color: #636b6f;
                 padding: 0 25px;
@@ -63,89 +55,93 @@
                 text-decoration: none;
                 text-transform: uppercase;
             }
-
             .m-b-md {
                 margin-bottom: 30px;
+                color:#636b6f;
             }
+            .alert alert-info{
+                background-color: #fff;
+            }
+          
         </style>
     </head>
     <body>
-
-        <div class="flex-center position-ref full-height">
-            <?php if(Route::has('login')): ?>
-                <div class="top-right links">
-                    <?php if(Auth::check()): ?>
-                        <a href="<?php echo e(url('/home')); ?>">Home</a>
-                    <?php else: ?>
-                        <a href="<?php echo e(url('/login')); ?>">Login</a>
-                        <a href="<?php echo e(url('/register')); ?>">Register</a>
-                    <?php endif; ?>
-                </div>
-            <?php endif; ?>
 
             <div class="content">
                 <div class="title m-b-md">
                     Teleport
                 </div>
-                <div>
-                        
-                    
-                    <form method="post" action="/search">
-                    <?php echo e(csrf_field()); ?>  
-                        <input type="text" name="searchQuery" id="q" placeholder="Search">
-                        <input type="submit" value="search">
-                        <br>
-                        <div id="lista">
-                            
-                        </div>
-                    </form>
-                    <?php if(Session::has('message')): ?>
-                        <p class="alert <?php echo e(Session::get('alert-class', 'alert-info')); ?>"><?php echo e(Session::get('message')); ?></p>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-        <script>
-                $('#q').keyup(function(){
-                if($('#q').val().length >= 3) {
-                    var inputValue = $('#q').val();
-                    $.ajax({
-               type: "POST",
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                },
-                                cache: false,
-                                encoding: "UTF-8",
-                                url: "<?php echo e(url('teleport')); ?>",
-                                beforeSend: function (xhr) {
-            var token = $('meta[name="csrf_token"]').attr('content');
-
-            if (token) {
-                  return xhr.setRequestHeader('X-CSRF-TOKEN', token);
-            }
-        },
-                                data: {input: inputValue},
-                success: function (response) { 
-                    document.getElementById("lista").innerHTML = "";
-                    response.map(function (x) {
-                        var lista = document.createElement("LI");                 
-                        var textnode = document.createTextNode(x);         
-                        lista.appendChild(textnode);                              
-                        document.getElementById("lista").appendChild(lista);
-                       
-                    })
-                },
-                error: function (response) {
-                    $('#errormessage').html(response.message);
-                }
-                });
-                }
-                else{
-        
-                }
                 
-                });
-               
-        </script>
+                <center><form method="post" action="/search">
+                    <?php echo e(csrf_field()); ?>
+
+                    <div class="input-group">
+                      <input autocomplete="off" name="searchQuery" type="text" class="form-control" placeholder="Search" id="inp">
+                      <div class="input-group-btn">
+                        <button class="btn btn-default" type="submit" id="search">
+                          <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </form> </center>
+       
+       <?php if(Session::has('message')): ?>
+       <p class="alert alert-info"><?php echo e(Session::get('message')); ?></p>
+       <?php endif; ?>
+       
+       <script>
+       function wpisywanie(xdata){
+                    inp = document.getElementById('inp');
+                    inp.value = xdata.text;
+                    $('#search').trigger("click").attr("disabled", true);
+                    
+                }
+        $('#inp').keyup(function(){
+        if($('#inp').val().length >= 3) {
+            var inputValue = $('#inp').val();
+            $.ajax({
+                        type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        cache: false,
+                        encoding: "UTF-8",
+                        url: "<?php echo e(url('teleport')); ?>",
+                        beforeSend: function (before) {
+                            var token = $('meta[name="csrf_token"]').attr('content');
+                            if (token) {
+                                return before.setRequestHeader('X-CSRF-TOKEN', token);
+                            }
+},
+                        data: {input: inputValue},
+        success: function (response) { 
+            document.getElementById("lista").innerHTML = "";
+            response.map(function (x) {
+                var li = document.createElement("p");
+                li.innerHTML = "<a href='#' onclick='wpisywanie(this);' >"+x+"</a>";                     
+                document.getElementById("lista").appendChild(li);
+            })
+        },
+        error: function (response) {
+            $('#errormessage').html(response.message);
+        }
+        });
+        }
+        else{
+            lista.innerHTML = "Brak wyników, wpisz więcej znaków";
+        }
+        });
+       
+</script>
+</br>
+    <div id="lista"></div>
+        </div>
+        <div id="hr">
+        <hr/ style="width: 200px;">
+        <center>Laravel application</center>
+        <hr/ style="width: 300px;">
+        </div>
+            
+    
     </body>
 </html>

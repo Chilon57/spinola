@@ -13,6 +13,7 @@ class CreateTeleportsTable extends Migration
      */
     public function up()
     {
+
         Schema::create('teleports', function (Blueprint $table) {
             $table->increments('id');
             $table->string('city_search', 25);
@@ -20,6 +21,8 @@ class CreateTeleportsTable extends Migration
             $table->binary('query_result')->nullable()->default(null);
             $table->timestamps();
         });
+
+        DB::statement('ALTER TABLE teleports CHANGE city_search VARCHAR(120)');
     }
 
     /**
